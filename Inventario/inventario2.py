@@ -229,6 +229,6 @@ def buscar_por_id(id):
         return jsonify(dict(producto))
     else:
         return jsonify({'message': 'Producto no encontrado'}), 404
-
+        
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=8080)
