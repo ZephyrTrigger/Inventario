@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Sistema de Inventario</title>
+    <link rel="stylesheet" href="/static/css/styles.css"> <!-- Ruta al archivo CSS -->
+</head>
+<body>
+    <h1>Sistema de Inventario</h1>
+    
+    <!-- Formulario de entrada para los datos del producto -->
+    <div class="form-container">
+        <div class="field-group">
+            <label>SKU: <input type="text" id="sku"></label>
+        </div>
+        <div class="field-group">
+            <label>Descripción: <input type="text" id="descripcion"></label>
+        </div>
+        <div class="field-group">
+            <label>Ubicación: <input type="text" id="ubicacion"></label>
+        </div>
+        <div class="field-group">
+            <label>Cantidad: <input type="text" id="cantidad"></label>
+        </div>
+        <div class="field-group">
+            <label>Código de Barras: <input type="text" id="codigo_barras"></label>
+        </div>
+        <div class="field-group">
+            <label>Costo (CLP): <input type="number" id="costo"></label>
+        </div>
+        <div class="field-group">
+            <label>Categoría: <input type="text" id="categoria"></label>
+        </div>
+        <div class="field-group">
+            <label>ID: <input type="number" id="buscar_id"></label>
+        </div>
+        
+        <div class="field-group">
+            <label>Categoría:
+                <select id="buscar_categoria">
+                    <option value="">Selecciona una categoría</option>
+                </select>
+            </label>
+        </div>
+        <button onclick="buscarPorCategoria()">Buscar por Categoría</button>
+        
+        
+
+    </div>
+
+    <!-- Botones de acción -->
+    <div class="buttons">
+        <button onclick="buscarPorSKU()">Buscar por SKU</button>
+        <button onclick="buscarPorCodigoBarras()">Buscar por Código de Barras</button>
+        <button onclick="buscarPorID()">Buscar por ID</button>
+        <button onclick="agregarProducto()">Agregar Producto</button>
+        <button onclick="modificarProducto()">Modificar Producto</button>
+        <button onclick="eliminarProducto()">Eliminar Producto</button>
+        <button onclick="limpiarCampos()">Limpiar</button>
+        <button onclick="exportarExcel()">Exportar a Excel</button>
+        <form id="form-importar" enctype="multipart/form-data">
+            <input type="file" id="file" accept=".xlsx" />
+            <button type="button" onclick="importarExcel()">Importar Excel</button>
+        </form>
+        <button onclick="buscarPorDescripcion()">Buscar por Descripción</button>
+    </div>
+    
+    <!-- Tabla para mostrar la lista de productos -->
+    <h2>Lista de Productos</h2>
+    <table id="productosTabla">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>SKU</th>
+                <th>Descripción</th>
+                <th>Cantidad</th>
+                <th>Ubicación</th>
+                <th>Código de Barras</th>
+                <th>Costo</th>
+                <th>Categoría</th>
+                <!-- Columna para mostrar el precio de venta calculado -->
+            </tr>
+        </thead>
+        <tbody id="productosBody"></tbody> <!-- Contenedor para filas dinámicas -->
+    </table>
+
+    <!-- Archivo JavaScript para manejar las acciones de la interfaz -->
+    <script src="/static/js/script.js"></script>
+</body>
+</html>
