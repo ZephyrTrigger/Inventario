@@ -13,7 +13,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 });
 
-
 // Función para cargar categorías en el desplegable
 async function cargarCategorias() {
     try {
@@ -60,15 +59,6 @@ async function obtenerProductos() {
     } catch (error) {
         console.error("Error al obtener los productos:", error);
     }
-}
-
-// Calcular rango de precios
-function calcularPrecioVenta(costo) {
-    const margenMin = 1.10;
-    const margenMax = 1.30;
-    const precioMin = (costo * margenMin).toFixed(2);
-    const precioMax = (costo * margenMax).toFixed(2);
-    return `${precioMin} - ${precioMax}`;
 }
 
 // Agregar producto
@@ -146,6 +136,33 @@ async function modificarProducto() {
     }
 }
 
+// Eliminar producto
+async function eliminarProducto() {
+    const id = document.getElementById("buscar_id").value.trim();
+
+    if (!id || isNaN(id)) {
+        alert("Por favor ingresa un ID válido para eliminar.");
+        return;
+    }
+
+    try {
+        const response = await fetch(`/producto/${id}`, {
+            method: 'DELETE'
+        });
+
+        if (response.ok) {
+            alert("Producto eliminado exitosamente.");
+            obtenerProductos();
+            limpiarCampos();
+        } else {
+            alert("Error al eliminar el producto.");
+        }
+    } catch (error) {
+        console.error("Error al eliminar el producto:", error);
+    }
+}
+
+// Buscar por descripción
 async function buscarPorDescripcion() {
     const descripcion = document.getElementById("descripcion").value.trim();
 
@@ -155,10 +172,9 @@ async function buscarPorDescripcion() {
     }
 
     try {
-        // Codificar la descripción para manejar caracteres especiales como "/"
         const response = await fetch(`/producto/descripcion/${encodeURIComponent(descripcion)}`);
         const productosBody = document.getElementById('productosBody');
-        productosBody.innerHTML = ''; // Limpiar la tabla
+        productosBody.innerHTML = '';
 
         if (response.ok) {
             const productos = await response.json();
@@ -185,77 +201,139 @@ async function buscarPorDescripcion() {
     }
 }
 
+// Buscar por SKU
+async function buscarPorSKU() {
+    const sku = document.getElementById("sku").value.trim();
 
-
-
-// Buscar por categoría
-async function buscarPorCategoria() {
-    const categoria = document.getElementById("buscar_categoria").value;
-
-    if (!categoria) {
-        alert("Por favor selecciona una categoría.");
+    if (!sku) {
+        alert("Por favor ingresa un SKU para buscar.");
         return;
     }
 
     try {
-        const response = await fetch(`/producto/categoria/${encodeURIComponent(categoria)}`);
-        if (response.ok) {
-            const productos = await response.json();
-            const productosBody = document.getElementById('productosBody');
-            productosBody.innerHTML = '';
+        const response = await fetch(`/producto/sku/${encodeURIComponent(sku)}`);
+        const productosBody = document.getElementById('productosBody');
+        productosBody.innerHTML = '';
 
-            productos.forEach(producto => {
-                const row = `
-                    <tr>
-                        <td>${producto.id}</td>
-                        <td>${producto.sku}</td>
-                        <td>${producto.descripcion}</td>
-                        <td>${producto.cantidad}</td>
-                        <td>${producto.ubicacion}</td>
-                        <td>${producto.codigo_barras}</td>
-                        <td>${producto.costo}</td>
-                        <td>${producto.categoria}</td>
-                    </tr>`;
-                productosBody.innerHTML += row;
-            });
+        if (response.ok) {
+            const producto = await response.json();
+            const row = `
+                <tr>
+                    <td>${producto.id}</td>
+                    <td>${producto.sku}</td>
+                    <td>${producto.descripcion}</td>
+                    <td>${producto.cantidad}</td>
+                    <td>${producto.ubicacion}</td>
+                    <td>${producto.codigo_barras}</td>
+                    <td>${producto.costo}</td>
+                    <td>${producto.categoria}</td>
+                </tr>`;
+            productosBody.innerHTML += row;
         } else {
-            alert("No se encontraron productos en esta categoría.");
+            productosBody.innerHTML = '<tr><td colspan="8">No se encontró un producto con ese SKU</td></tr>';
         }
     } catch (error) {
-        console.error("Error al buscar productos por categoría:", error);
+        console.error("Error al buscar productos por SKU:", error);
     }
 }
 
+// Buscar por código de barras
+async function buscarPorCodigoBarras() {
+    const codigoBarras = document.getElementById("codigo_barras").value.trim();
+
+    if (!codigoBarras) {
+        alert("Por favor ingresa un código de barras para buscar.");
+        return;
+    }
+
+    try {
+        const response = await fetch(`/producto/codigo_barras/${encodeURIComponent(codigoBarras)}`);
+        const productosBody = document.getElementById('productosBody');
+        productosBody.innerHTML = '';
+
+        if (response.ok) {
+            const producto = await response.json();
+            const row = `
+                <tr>
+                    <td>${producto.id}</td>
+                    <td>${producto.sku}</td>
+                    <td>${producto.descripcion}</td>
+                    <td>${producto.cantidad}</td>
+                    <td>${producto.ubicacion}</td>
+                    <td>${producto.codigo_barras}</td>
+                    <td>${producto.costo}</td>
+                    <td>${producto.categoria}</td>
+                </tr>`;
+            productosBody.innerHTML += row;
+        } else {
+            productosBody.innerHTML = '<tr><td colspan="8">No se encontró un producto con ese código de barras</td></tr>';
+        }
+    } catch (error) {
+        console.error("Error al buscar productos por código de barras:", error);
+    }
+}
+
+// Buscar por ID
+async function buscarPorID() {
+    const id = document.getElementById("buscar_id").value.trim();
+
+    if (!id || isNaN(id)) {
+        alert("Por favor ingresa un ID válido para buscar.");
+        return;
+    }
+
+    try {
+        const response = await fetch(`/producto/id/${encodeURIComponent(id)}`);
+        const productosBody = document.getElementById('productosBody');
+        productosBody.innerHTML = '';
+
+        if (response.ok) {
+            const producto = await response.json();
+            const row = `
+                <tr>
+                    <td>${producto.id}</td>
+                    <td>${producto.sku}</td>
+                    <td>${producto.descripcion}</td>
+                    <td>${producto.cantidad}</td>
+                    <td>${producto.ubicacion}</td>
+                    <td>${producto.codigo_barras}</td>
+                    <td>${producto.costo}</td>
+                    <td>${producto.categoria}</td>
+                </tr>`;
+            productosBody.innerHTML += row;
+        } else {
+            productosBody.innerHTML = '<tr><td colspan="8">No se encontró un producto con ese ID</td></tr>';
+        }
+    } catch (error) {
+        console.error("Error al buscar productos por ID:", error);
+    }
+}
+
+// Exportar a Excel
+async function exportarExcel() {
+    try {
+        const response = await fetch('/exportar_excel');
+
+        if (response.ok) {
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'inventario.xlsx';
+            a.click();
+            window.URL.revokeObjectURL(url);
+        } else {
+            const error = await response.json();
+            alert(`Error: ${error.message}`);
+        }
+    } catch (error) {
+        console.error("Error al exportar a Excel:", error);
+    }
+}
 
 // Limpiar campos
 function limpiarCampos() {
     document.querySelectorAll('input').forEach(input => input.value = "");
     document.getElementById("buscar_categoria").value = "";
     document.getElementById("buscar_id").value = "";
-}
-
-async function importarExcel() {
-    const fileInput = document.getElementById("file");
-    const formData = new FormData();
-
-    if (fileInput.files.length === 0) {
-        alert("Por favor selecciona un archivo Excel para importar.");
-        return;
-    }
-
-    formData.append("file", fileInput.files[0]);
-
-    try {
-        const response = await fetch('/importar_excel', { method: 'POST', body: formData });
-
-        if (response.ok) {
-            alert("Inventario importado y base de datos actualizada correctamente.");
-            obtenerProductos();
-        } else {
-            const error = await response.json();
-            alert(`Error: ${error.message}`);
-        }
-    } catch (error) {
-        console.error("Error al importar Excel:", error);
-    }
 }
